@@ -3,14 +3,20 @@ from django.contrib.auth.models import User
 from .models import Patient, Doctor, Appointment
 
 class PatientSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(source='user.first_name', read_only=True)
+    last_name = serializers.CharField(source='user.last_name', read_only=True)
+    
     class Meta:
         model = Patient
-        fields = '__all__'
+        fields = ['first_name', 'last_name']
 
 class DoctorSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(source='user.first_name', read_only=True)
+    last_name = serializers.CharField(source='user.last_name', read_only=True)
+    
     class Meta:
         model = Doctor
-        fields = '__all__'
+        fields = ['title', 'first_name', 'last_name', 'speciality']
 
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:

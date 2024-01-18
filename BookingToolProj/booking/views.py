@@ -8,15 +8,15 @@ from .serializers import PatientSerializer, DoctorSerializer, AppointmentSeriali
 class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
-
-class DoctorViewSet(viewsets.ModelViewSet):
-    queryset = Doctor.objects.all()
-    serializer_class = DoctorSerializer
     
     def create(self, request, *args, **kwargs):
-        user_data = request.data.pop('user', None)
-        if not user_data:
-            return Response({"user": ["This field is required."]}, status=status.HTTP_400_BAD_REQUEST)
+        user_data = {
+            'username': request.data.get('username'),
+            'password': request.data.get('password'),
+            'first_name': request.data.get('first_name'),
+            'last_name': request.data.get('last_name'),
+            'email': request.data.get('email'),
+        }
 
         user_serializer = UserSerializer(data=user_data)
         if user_serializer.is_valid():
@@ -30,6 +30,52 @@ class DoctorViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        user = instance.user
+        user.delete()
+
+        self.perform_destroy(instance)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+class DoctorViewSet(viewsets.ModelViewSet):
+    queryset = Doctor.objects.all()
+    serializer_class = DoctorSerializer
+
+    def create(self, request, *args, **kwargs):
+        user_data = {
+            'username': request.data.get('username'),
+            'password': request.data.get('password'),
+            'first_name': request.data.get('first_name'),
+            'last_name': request.data.get('last_name'),
+            'email': request.data.get('email'),
+        }
+
+        user_serializer = UserSerializer(data=user_data)
+        if user_serializer.is_valid():
+            user = user_serializer.save()
+            request.data['user'] = user.id
+        else:
+            return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        user = instance.user
+        user.delete()
+
+        self.perform_destroy(instance)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class AppointmentViewSet(viewsets.ModelViewSet):
     queryset = Appointment.objects.all()
@@ -45,3 +91,8 @@ class AppointmentViewSet(viewsets.ModelViewSet):
             elif hasattr(user, 'doctor'):
                 return Appointment.objects.filter(doctor=user.doctor)
         return Appointment.objects.none()
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)

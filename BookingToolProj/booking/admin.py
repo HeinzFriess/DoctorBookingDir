@@ -4,7 +4,7 @@ from .models import Doctor, Patient, Appointment
 
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
-    list_display = ('title', 'first_name', 'last_name', 'speciality') 
+    list_display = ('title', 'first_name', 'last_name', 'speciality', 'id') 
     
     def first_name(self, obj):
         return obj.user.first_name
@@ -17,7 +17,7 @@ class DoctorAdmin(admin.ModelAdmin):
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name')
+    list_display = ('first_name', 'last_name', 'id')
     
     def first_name(self, obj):
         return obj.user.first_name
