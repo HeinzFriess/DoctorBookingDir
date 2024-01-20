@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .models import Patient, Doctor, Appointment
 from .serializers import PatientSerializer, DoctorSerializer, AppointmentSerializer, UserSerializer
+from django.contrib.auth.models import User
 
 class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
@@ -20,7 +21,7 @@ class PatientViewSet(viewsets.ModelViewSet):
 
         user_serializer = UserSerializer(data=user_data)
         if user_serializer.is_valid():
-            user = user_serializer.save()
+            user = User.objects.create_user(**user_serializer.validated_data)
             request.data['user'] = user.id
         else:
             return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -39,7 +40,7 @@ class PatientViewSet(viewsets.ModelViewSet):
 
         self.perform_destroy(instance)
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": "Patient successfully deleted."}, status=status.HTTP_204_NO_CONTENT)
 
 class DoctorViewSet(viewsets.ModelViewSet):
     queryset = Doctor.objects.all()
@@ -56,7 +57,7 @@ class DoctorViewSet(viewsets.ModelViewSet):
 
         user_serializer = UserSerializer(data=user_data)
         if user_serializer.is_valid():
-            user = user_serializer.save()
+            user = User.objects.create_user(**user_serializer.validated_data)
             request.data['user'] = user.id
         else:
             return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -75,7 +76,7 @@ class DoctorViewSet(viewsets.ModelViewSet):
 
         self.perform_destroy(instance)
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": "Doctor successfully deleted."}, status=status.HTTP_204_NO_CONTENT)
 
 class AppointmentViewSet(viewsets.ModelViewSet):
     queryset = Appointment.objects.all()
@@ -95,4 +96,4 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"detail": "Appointment successfully deleted."}, status=status.HTTP_204_NO_CONTENT)
