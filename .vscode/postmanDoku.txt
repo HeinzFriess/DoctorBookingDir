@@ -1,0 +1,42 @@
+Get_Doctors
+	http://127.0.0.1:8000/api/doctors/
+
+Post_Doctors
+	http://127.0.0.1:8000/api/doctors/
+	
+	Body raw json
+	{"title":"Dr.","speciality":"Skin","username":"PerZufall","first_name":"Per","last_name":"Zufall","password":"securepassword","email":"Perzufall@weeb.de"}
+
+Delete_Doctors
+	http://127.0.0.1:8000/api/doctors/2/
+
+Get_Patients
+	http://127.0.0.1:8000/api/patients/
+
+Post_Patients
+	http://127.0.0.1:8000/api/patients/
+	Body raw json
+	{"username":"MagicMarry","first_name":"Marry","last_name":"Dampf","password":"kljdhkljdhr","email":"rainerzufall@weeb.de"}
+
+Delete_Patients
+	http://127.0.0.1:8000/api/patients/2/
+
+POST login
+	http://127.0.0.1:8000/api/login/
+	Request Headers
+	Authorization: token 53cda7f40f17cfcbf795c77cfc5cf1da162f0ba4
+	Body raw json
+	{"username":"GerdDampf","password":"ekljbskjnlbeb"}
+
+Get_Appointments (login necessary)
+	http://127.0.0.1:8000/api/appointments/
+
+Post_Appointments (login necessary)
+	http://127.0.0.1:8000/api/appointments/
+	Request Headers
+	Authorization: token 53cda7f40f17cfcbf795c77cfc5cf1da162f0ba4
+	Body raw json
+	 {"title":"Rückenschmerzen","description":"wlfnlsknmökemölkeödlöbd","date":"2024-02-29T14:00:00Z","doctor":1,"patient":7}
+	
+Delete_Appointments
+	http://127.0.0.1:8000/api/appointments/1/
